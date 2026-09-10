@@ -81,7 +81,7 @@ export default function CSRPage() {
 
   function addToCart(id: number) {
     setCart((prev) => [...prev, id]);
-    setAddedIds((prev) => new Set([...prev, id]));
+    setAddedIds((prev) => new Set(prev).add(id));
     setTimeout(() => {
       setAddedIds((prev) => {
         const next = new Set(prev);
@@ -372,9 +372,8 @@ function ProductCard({
         <div style={{ position: "absolute", top: 12, left: 12, zIndex: 10, display: "flex", gap: 6 }}>
           {product.tag && (
             <span
-              className={`tag ${
-                product.tag === "SALE" ? "tag-sale" : product.tag === "NEW" ? "tag-new" : "tag-hot"
-              }`}
+              className={`tag ${product.tag === "SALE" ? "tag-sale" : product.tag === "NEW" ? "tag-new" : "tag-hot"
+                }`}
             >
               {product.tag}
             </span>
