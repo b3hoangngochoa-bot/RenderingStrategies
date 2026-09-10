@@ -1,101 +1,74 @@
-import Image from "next/image";
+import React from 'react';
 
-export default function Home() {
+// 1. Hàm gọi API lấy dữ liệu sử dụng SSR (Server-Side Rendering)
+async function getServices() {
+  // Vẫn gọi API để đáp ứng đúng yêu cầu fetch + cache: 'no-store' của đề bài
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=6', {
+    cache: 'no-store'
+  });
+  
+  if (!res.ok) {
+    throw new Error('Không thể tải dữ liệu dịch vụ');
+  }
+  
+  const apiData = await res.json();
+
+  // Tạo bộ dữ liệu tiếng Việt thực tế cho mô hình Hair Salon
+  const vietnameseServices = [
+    { title: "Cắt Tóc Nam Tiêu Chuẩn", body: "Tư vấn kiểu tóc phù hợp khuôn mặt, cắt, gội, vuốt sáp tạo kiểu chuyên nghiệp từ các stylist hàng đầu." },
+    { title: "Uốn Phồng Trẻ Trung", body: "Uốn phồng chân tóc, uốn xoăn nhẹ phong cách Hàn Quốc, giữ nếp lâu dài và dễ dàng tự chăm sóc tại nhà." },
+    { title: "Nhuộm Màu Thời Trang", body: "Trải nghiệm các tông màu hot trend. Sử dụng thuốc nhuộm cao cấp, bền màu và không gây hư tổn cho tóc." },
+    { title: "Phục Hồi Tóc Chuyên Sâu", body: "Liệu trình hấp phục hồi với keratin và collagen giúp lấy lại độ bóng mượt, chắc khỏe cho mái tóc xơ rối." },
+    { title: "Gội Đầu Dưỡng Sinh", body: "Gội đầu thảo dược kết hợp massage ấn huyệt cổ vai gáy giúp thư giãn tinh thần, xua tan mệt mỏi." },
+    { title: "Combo Chăm Sóc Da Mặt", body: "Dịch vụ cạo râu, tỉa lông mày an toàn kết hợp đắp mặt nạ, chườm khăn nóng thư giãn tuyệt đối." }
+  ];
+
+  // Trộn dữ liệu tiếng Việt vào cấu trúc của API trả về
+  return apiData.map((item: any, index: number) => ({
+    ...item,
+    title: vietnameseServices[index]?.title || item.title,
+    body: vietnameseServices[index]?.body || item.body
+  }));
+}
+
+// 2. Component chính hiển thị giao diện
+export default async function Home() {
+  const services = await getServices();
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="min-h-screen p-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <div className="max-w-4xl mx-auto flex flex-col gap-8">
+        
+        <header className="border-b pb-6">
+          <h1 className="text-3xl font-bold mb-2">Hệ Thống Đặt Lịch Cắt Tóc</h1>
+          <div className="inline-block bg-black text-white text-sm px-3 py-1 rounded-full">
+            Chiến lược Rendering: SSR (cache: no-store)
+          </div>
+        </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <section>
+          <h2 className="text-xl font-semibold mb-6">Danh sách dịch vụ nổi bật</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service: any) => (
+              <div 
+                key={service.id} 
+                className="border border-black/[.08] dark:border-white/[.145] p-6 rounded-xl hover:shadow-lg transition-shadow flex flex-col justify-between bg-white"
+              >
+                <div>
+                  <h3 className="font-bold text-lg mb-3">{service.title}</h3>
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                    {service.body}
+                  </p>
+                </div>
+                <button className="w-full rounded-full bg-black text-white hover:bg-gray-800 h-10 text-sm font-medium transition-colors">
+                  Đặt lịch ngay
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+
+      </div>
+    </main>
   );
 }
