@@ -1,8 +1,9 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
   --bg-primary: #0a0a0f;
@@ -333,6 +334,12 @@ body {
   border: 1px solid rgba(108, 99, 255, 0.3);
   border-radius: 12px;
   padding: 16px 20px;
+}
+
+/* Nav hover */
+.nav-link-hover:hover {
+  color: var(--text-primary) !important;
+  background: rgba(108, 99, 255, 0.1) !important;
 }
 
 @layer utilities {
