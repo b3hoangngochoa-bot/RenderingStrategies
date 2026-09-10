@@ -1,102 +1,74 @@
-﻿# 🚀 Next.js – Demo 4 Kiểu Rendering
+# FocusBoard — Demo Client-side Rendering
 
-Dự án (starter) dùng **Next.js 14 App Router** + **TypeScript** + **Tailwind CSS**.
+FocusBoard là website quản lý công việc một trang được xây dựng bằng **Next.js 14 App Router**, **TypeScript** và **Tailwind CSS**. Dự án chỉ sử dụng một chiến lược rendering: **CSR (Client-side Rendering)**.
 
----
+## Chức năng
 
-## 📋 Yêu cầu môi trường
+- Tải danh sách công việc từ JSONPlaceholder API.
+- Hiển thị loading skeleton trong khi chờ dữ liệu.
+- Lọc theo tất cả, đang làm hoặc đã hoàn thành.
+- Tìm kiếm công việc theo tên.
+- Thêm công việc mới.
+- Đánh dấu hoàn thành/chưa hoàn thành.
+- Tự dùng dữ liệu mẫu khi API không phản hồi.
+- Giao diện responsive trên máy tính và điện thoại.
 
-| Công cụ | Phiên bản tối thiểu | Kiểm tra |
-|---------|-------------------|----------|
-| **Node.js** | ≥ 18.17 | `node -v` |
-| **npm** | ≥ 9 | `npm -v` |
-| **Git** | bất kỳ | `git --version` |
+## Cấu trúc thư mục
 
-> 💡 Tải Node.js tại: https://nodejs.org (chọn bản **LTS**)
-
----
-
-## ⚡ Cài đặt & Chạy
-
-### 1. Clone repository
-
-```bash
-git clone <URL-repo>
-```
-
-### 2. Vào thư mục project
-
-```bash
-cd demo
-```
-
-### 3. Cài dependencies
-
-```bash
-npm install
-```
-
-
-### 4. Chạy development server
-
-```bash
-npm run dev
-```
-
-### 5. Mở trình duyệt
-
-```
-http://localhost:3000
-```
-
-Server sẽ **tự reload** mỗi khi bạn lưu file. 🎉
-
----
-
-## 📁 Cấu trúc thư mục
-
-```
+```text
 demo/
 ├── src/
-│   ├── app/              # Tất cả các trang đặt ở đây (App Router)
-│   │   ├── layout.tsx    # Layout chung
-│   │   ├── page.tsx      # Trang chủ (/)
-│   │   └── globals.css   # CSS toàn cục
-│   └── components/       # Components dùng chung
+│   ├── app/
+│   │   ├── layout.tsx      # Layout và metadata chung
+│   │   ├── page.tsx        # Trang chủ (/)
+│   │   └── globals.css     # CSS toàn cục
+│   └── components/
+│       └── TaskBoard.tsx   # Component CSR và toàn bộ tương tác
 ├── package.json
 ├── tailwind.config.ts
 └── next.config.mjs
 ```
 
----
+## Cài đặt và chạy
 
-## 📝 Yêu cầu bài tập
-
-Xây dựng một trang web bất kỳ bằng Next.js 14 và **vận dụng ít nhất 1 trong 4 kiểu rendering** sau:
-
-| Kiểu | Mô tả ngắn | Cách dùng trong Next.js 14 |
-|------|-----------|---------------------------|
-| **CSR** | Render trên trình duyệt | Thêm `"use client"` + dùng `useEffect` |
-| **SSR** | Render trên server mỗi request | `fetch(..., { cache: "no-store" })` |
-| **SSG** | Render lúc build, tĩnh hoàn toàn | `fetch(..., { cache: "force-cache" })` |
-| **ISR** | Tĩnh nhưng tự làm mới theo chu kỳ | `fetch(..., { next: { revalidate: 60 } })` |
-
-> Tham khảo thêm: [Next.js Rendering Docs](https://nextjs.org/docs/app/building-your-application/rendering)
-
----
-
-## ❓ Xử lý lỗi thường gặp
-
-**Lỗi `Cannot find module` hoặc lỗi sau khi clone:**
 ```bash
-rmdir /s /q .next node_modules
 npm install
 npm run dev
 ```
 
-**Port 3000 đã bị chiếm:**
+Mở [http://localhost:3000](http://localhost:3000).
+
+Kiểm tra production:
+
 ```bash
-npm run dev -- -p 3001
+npm run lint
+npm run build
+npm run start
 ```
 
-**`npm` không nhận lệnh:** Cài lại Node.js từ https://nodejs.org rồi mở lại terminal.
+## CSR hoạt động như thế nào?
+
+File `src/components/TaskBoard.tsx` có dòng `"use client"`. Khi trang mở, component chạy `useEffect` ở trình duyệt để gọi API. Sau khi nhận dữ liệu, `setTodos` cập nhật state và React render lại danh sách công việc.
+
+```tsx
+"use client";
+
+useEffect(() => {
+  async function loadTodos() {
+    const response = await fetch(API_URL);
+    const data = await response.json();
+    setTodos(data);
+  }
+
+  loadTodos();
+}, []);
+```
+
+Luồng hoạt động:
+
+```text
+Mở trang → Hiện khung giao diện → useEffect gọi API
+→ API trả dữ liệu → setTodos cập nhật state → Danh sách xuất hiện
+```
+
+Nguồn dữ liệu: [JSONPlaceholder](https://jsonplaceholder.typicode.com/).
